@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Champions League 2025 Map</title>
+  <title>European Club Map</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     #map { height: 100vh; margin: 0; padding: 0; }
     body { margin: 0; }
+    .club-icon {
+      border-radius: 50%;
+      border: 2px solid white;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
 
-  <!-- Load Leaflet -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-  <!-- Load club data -->
   <script src="clubs.js"></script>
-
-  <!-- Map logic -->
   <script>
     const map = L.map('map').setView([54, 15], 4);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -26,10 +25,20 @@
     }).addTo(map);
 
     clubs.forEach(club => {
-      L.marker(club.coords)
+      const icon = L.icon({
+        iconUrl: club.logo,
+        iconSize: [40, 40],
+        className: 'club-icon'
+      });
+
+      L.marker(club.coords, { icon })
         .addTo(map)
         .bindPopup(`<b>${club.name}</b><br>${club.country}<br>Group ${club.group}`);
     });
+
+    // Optional: Fit map to all clubs
+    const bounds = L.latLngBounds(clubs.map(c => c.coords));
+    map.fitBounds(bounds);
   </script>
 </body>
 </html>
